@@ -1,22 +1,20 @@
 import * as uuid from 'uuid'
-
- import { Item } from '../models/Item'
- import { ItemAccess } from '../dataLayer/ItemAccess'
- import { CreateItemRequest } from '../requests/CreateItemRequest'
-// import { UpdateTodoRequest } from '../requests/UpdateTodoRequest' 
-// import { TodoUpdate } from '../models/TodoUpdate'
+import { Item } from '../models/Item'
+import { ItemAccess } from '../dataLayer/ItemAccess'
+import { CreateItemRequest } from '../requests/CreateItemRequest'
+import { UpdateItemRequest } from '../requests/UpdateItemRequest'
+ import { ItemUpdate } from '../models/ItemUpdate'
 
 const itemAccess = new ItemAccess()
 
-export async function getAllItems(): Promise<Item[]>{
-    return await itemAccess.getItems()
+export async function getAllItems(userId: string): Promise<Item[]>{
+    return await itemAccess.getItems(userId)
 }
 
 export async function createItem(
     createItem: CreateItemRequest,
     userId: string
-): Promise<Item>{
-
+	): Promise<Item>{
     const itemId = uuid.v4()
     return await itemAccess.createItem({
 			  userId: userId,
@@ -26,26 +24,21 @@ export async function createItem(
         done: false
     })
 }
-// export async function deleteTodo(userId: string, todoId: string): Promise<String> {
-//     return ItemAccess.deleteTodo(userId, todoId)
+export async function deleteItem(userId: string, itemId: string): Promise<String> {
+		return itemAccess.deleteItem(userId, itemId)
+}
 
-// }
-// export async function getUploadUrl(userId: string, todoId: string): Promise<String>{
-//     return ItemAccess.getUploadUrl(userId, todoId)
-// }
+export async function updateItem(
+    userId: string,
+    itemId: string,
+    updateItem: UpdateItemRequest
+): Promise<ItemUpdate>{
+    const updatedItem: ItemUpdate ={
+        name: updateItem.name,
+        done: updateItem.done
 
-// export async function updateTodo(
-//     userId: string,
-//     todoId: string,
-//     updateTodo: UpdateTodoRequest
-// ): Promise<TodoUpdate>{
-//     const updatedTodo: TodoUpdate ={
-//         name: updateTodo.name,
-//         dueDate: updateTodo.dueDate,
-//         done: updateTodo.done
-
-//     }
-//     return await todoAccess.updateTodo(userId, todoId, updatedTodo)
-// }
+    }
+    return await itemAccess.updateItem(userId, itemId, updatedItem)
+}
 
 

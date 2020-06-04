@@ -1,7 +1,7 @@
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 import { createLogger } from '../utils/logger'
 import { Item } from '../models/Item'
-//import { TodoUpdate } from '../models/TodoUpdate'
+import { ItemUpdate } from '../models/ItemUpdate'
 import * as AWS from 'aws-sdk'
 
 const AWSXRay = require('aws-xray-sdk');
@@ -24,16 +24,15 @@ export class ItemAccess{
         ){
         }
 
-		// Todo: replace scan with query once authentication is introduced. Remove Scan access from table in yml file
-		async getItems(): Promise<Item[]> {
+		async getItems(userId: string): Promise<Item[]> {
 			logger.info("Trying to retrieve shopping items")
 				
-				const result = await this.docClient.scan({
-            TableName: this.itemsTable
-            //KeyConditionExpression: 'userId = :userId',
-            //ExpressionAttributeValues:{
-            //    ':userId' :  userId
-            //}
+      const result = await this.docClient.query({
+				TableName: this.itemsTable,
+				KeyConditionExpression: 'userId = :userId',
+				ExpressionAttributeValues:{
+						':userId' :  userId
+				}
 
         }).promise()
         logger.info("Shopping Items retrieved successfully")
@@ -51,63 +50,33 @@ export class ItemAccess{
 			return item
 		}
     
-    // async updateTodo(userId: string, todoId: string, todoUpdate: TodoUpdate): Promise<TodoUpdate>{
-    //     var params = {
-    //     TableName : this.todosTable,
-    //     Key: {
-    //         userId: userId, 
-    //         todoId : todoId
-    //     },
-    //     UpdateExpression: "set name =:n, dueDate =:u, done:d",
-    //     ExpressionAttributeValues:{
-    //         ":n": todoUpdate.name,
-    //         ":u": todoUpdate.dueDate,
-    //         ":d": todoUpdate.done
-    //     },
-    //     ReturnValues: "UPDATED_NEW"
-    //     };
-    //     await this.docClient.update(params).promise
-    //     return todoUpdate   
-    // }
+    async updateItem(userId: string, itemId: string, itemUpdate: ItemUpdate): Promise<ItemUpdate>{
+			var params = {
+			TableName : this.itemsTable,
+			Key: {
+					userId: userId, 
+					itemId : itemId
+			},
+			UpdateExpression: "set name =:n, done:d",
+			ExpressionAttributeValues:{
+					":n": itemUpdate.name,
+					":d": itemUpdate.done
+			},
+			ReturnValues: "UPDATED_NEW"
+			};
+			await this.docClient.update(params).promise
+			return itemUpdate   
+	}
     
-    // async deleteTodo(userId: string,todoId: string): Promise<String>{
-    //     await this.docClient.delete({
-    //         TableName: this.todosTable,
-    //         Key: {
-    //             userId: userId,
-    //             todoId: todoId
-    //         }
-    //     }).promise()
-    //     logger.info("Todo Item is deleted successfully")
-    //     return ''
-    // }
-
-    // async getUploadUrl(userId: string, todoId: string): Promise<String>{
-    //     const url = getUrl(todoId, this.bucketName)
-    //     const attachmentUrl = `https://${this.bucketName}.s3.amazonaws.com/${todoId}`
-        
-    //     const options = {
-    //         TableName: this.todosTable,
-    //         Key: {
-    //             userId: userId,
-    //             todoId: todoId
-    //         },
-    //         UpdateExpression: "set attachmentUrl = :r",
-    //         ExpressionAttributeValues: {
-    //             ":r": attachmentUrl
-    //         },
-    //         ReturnValues: "UPDATED_NEW"
-    //     };
-
-    //     await this.docClient.update(options).promise()
-    //     logger.info("Signed Url created ", url)
-    //     return url;
-    // }    
+    async deleteItem(userId: string,itemId: string): Promise<String>{
+        await this.docClient.delete({
+            TableName: this.itemsTable,
+            Key: {
+                userId: userId,
+                itemId: itemId
+            }
+        }).promise()
+        logger.info("Shopping Item is deleted successfully")
+        return ''
+    } 
 }
-// function getUrl(todoId: string, bucketName: string ): string {
-//     return s3.getSignedUrl('putObject', {
-//         Bucket: bucketName,
-//         Key: todoId,
-//         Expires: parseInt(urlExpireation)
-//     })
-//  }

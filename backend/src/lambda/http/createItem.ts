@@ -4,7 +4,7 @@ import { CreateItemRequest } from '../../requests/CreateItemRequest'
 import { createItem } from '../../businessLogic/Items'
 import { createLogger } from '../../utils/logger'
 
-const logger = createLogger('Todo')
+const logger = createLogger('CreateItem')
 import { getUserId } from '../utils'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
