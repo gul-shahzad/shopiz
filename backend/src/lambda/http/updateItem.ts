@@ -11,7 +11,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const updatedItem: UpdateItemRequest = JSON.parse(event.body)
   const userId = getUserId(event);
 
-  logger.info("UpdateItem Event started")
+  logger.info("UpdateItem Event", event)
 
   await updateItem(userId, itemId, updatedItem)
   return {

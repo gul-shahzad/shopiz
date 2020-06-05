@@ -7,14 +7,8 @@ import * as AWS from 'aws-sdk'
 const AWSXRay = require('aws-xray-sdk');
 const XAWS = AWSXRay.captureAWS(AWS)
 
-
 const logger = createLogger('createItem')
 
-// const s3 = new XAWS.S3({
-//     signatureVersion: 'v4'
-// })
-
-// const urlExpireation = process.env.SIGNED_URL_EXPIRATION
 export class ItemAccess{
 	
     constructor(
@@ -50,7 +44,7 @@ export class ItemAccess{
 			return item
 		}
     
-    async updateItem(userId: string, itemId: string, itemUpdate: ItemUpdate): Promise<ItemUpdate>{
+		async updateItem(userId: string, itemId: string, itemUpdate: ItemUpdate): Promise<ItemUpdate>{
 			var params = {
 			TableName : this.itemsTable,
 			Key: {
@@ -59,15 +53,25 @@ export class ItemAccess{
 			},
 			UpdateExpression: "set name =:n, done:d",
 			ExpressionAttributeValues:{
-					":n": itemUpdate.name,
-					":d": itemUpdate.done
+					":n": "I am finally updated",
+					":d": true
 			},
 			ReturnValues: "UPDATED_NEW"
 			};
-			await this.docClient.update(params).promise
-			return itemUpdate   
-	}
-    
+			const result = await this.docClient.update(params).promise
+			logger.log("Result", result.toString())
+			//return itemUpdate  
+			// console.log("Updating the item...");
+			// this.docClient.update(params, function(err, data) {
+			// if (err) {
+			// 		logger.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+			// } else {
+			// 		logger.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
+			// }
+			// });
+			return itemUpdate 
+		}
+
     async deleteItem(userId: string,itemId: string): Promise<String>{
         await this.docClient.delete({
             TableName: this.itemsTable,

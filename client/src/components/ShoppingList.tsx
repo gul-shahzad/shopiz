@@ -15,6 +15,8 @@ import {
 } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
 
+// code inspiration https://codepen.io/MarcelMichau/pen/GNoaEm
+
 interface ShoppingState{
 		items : ShoppingModel[]
 		newItem: string
@@ -82,6 +84,4 @@ export default ShoppingList
 
 // TODO 
 // add design layout
-// set state through interface
-// set props through interface 
 // replace state with hook https://reactjs.org/docs/hooks-state.html

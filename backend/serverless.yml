@@ -8,6 +8,16 @@ custom:
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
+  documentation:
+    api:
+      info:
+        version: v1.0.0
+        title: Shopiz serverless application 
+        description: A shoppling list, which makes your life easier!
+    models:
+      - name: CreateItemRequest
+        contentType: application/json
+        schema: ${file(models/create-item-model.json)} # reference to your model's json schema file. You can also declare the model inline.
 
 # Add the serverless-webpack plugin
 plugins:
@@ -29,7 +39,6 @@ provider:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     ITEMS_TABLE: Items-${self:provider.stage}
     INDEX_NAME: itemIndex
-    IMAGES_S3_BUCKET: tba
     SIGNED_URL_EXPIRATION: 300    
     
 functions:
