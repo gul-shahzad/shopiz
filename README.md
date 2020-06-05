@@ -2,7 +2,7 @@
 
 ## Tools
 For this application I have used following tools:
-1. Serverless platform
+1. Serverless application framework
 2. AWS DynamoDB
 3. APIGateWay
 4. AWS Lamda functions
@@ -32,3 +32,25 @@ It is possible to update attributes of an item. We can change the name and done 
 It shall be possible to delete item by providing the itemId together with UserId, which is already coming through TokenId.     
 
 ![alt text](images/DeleteItem.png "Delete Item")
+
+
+## How to run the application
+
+### Install following utilities:
+- npm 
+- serverless framework
+- aws cli
+
+### Steps
+- create a aws user with full admin rights ( you need them initially while create cloud formation stack)
+- configure aws user on local system (access key, secret key)
+- git clone the applcation to your local directory. 
+- cd to backend
+- run npm install 
+- run sls deploy -v
+- add api endpoint in config.ts in "client" application.  
+- create auth0 application and add domain and clientId in config.ts in "client" application. 
+- cd to client and run "npm start"
+- http://localhost:3000 login to frontend and in inspect under "console" section get TokenId
+- one can use this tokenId in postman to perform all operations in postman.  
+
